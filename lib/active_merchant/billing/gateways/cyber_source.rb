@@ -563,13 +563,15 @@ module ActiveMerchant #:nodoc:
       def commit(request, options)
         response = parse(ssl_post(test? ? self.test_url : self.live_url, build_request(request, options)))
 
-        success = (response[:decision] == "ACCEPT") || (response[:decision] == "REVIEW")
+        success = (response[:decision] == "ACCEPT")
+        fraud_review = (response[:decision] == "REVIEW")
         message = @@response_codes[('r' + response[:reasonCode]).to_sym] rescue response[:message]
-        authorization = success ? [ options[:order_id], response[:requestID], response[:requestToken] ].compact.join(";") : nil
+        authorization = (success || fraud_review) ? [ options[:order_id], response[:requestID], response[:requestToken] ].compact.join(";") : nil
 
         Response.new(success, message, response,
           :test => test?,
           :authorization => authorization,
+          :fraud_review => fraud_review,
           :avs_result => { :code => response[:avsCode] },
           :cvv_result => response[:cvCode]
         )
