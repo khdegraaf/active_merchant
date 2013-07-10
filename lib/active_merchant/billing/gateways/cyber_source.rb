@@ -471,6 +471,9 @@ module ActiveMerchant #:nodoc:
       end
 
       def add_subscription_create_service(xml, options)
+        xml.tag! 'decisionManager' do
+          xml.tag! 'enabled', false
+        end
         xml.tag! 'paySubscriptionCreateService', {'run' => 'true'}
       end
 
