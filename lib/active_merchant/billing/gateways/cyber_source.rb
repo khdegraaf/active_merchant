@@ -226,6 +226,7 @@ module ActiveMerchant #:nodoc:
         add_payment_method_or_subscription(xml, money, creditcard_or_reference, options)
         add_auth_service(xml)
         add_business_rules_data(xml)
+        xml.tag!('deviceFingerprintID', options[:order_id]) if options[:order_id]
         xml.target!
       end
 
@@ -320,6 +321,7 @@ module ActiveMerchant #:nodoc:
         add_subscription(xml, options)
         add_subscription_create_service(xml, options)
         add_business_rules_data(xml)
+        xml.tag!('deviceFingerprintID', options[:order_id]) if options[:order_id]
         xml.target!
       end
 
